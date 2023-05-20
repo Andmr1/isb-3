@@ -1,7 +1,10 @@
-from keys import generate_hybrid_keys
-from encrypt import encrypt
-from decrypt import decrypt
+from keys import *
+from encrypt import *
+from decrypt import *
 import warnings
+logger = logging.getLogger()
+logger.setLevel('INFO')
+
 if __name__ == '__main__':
     warnings.filterwarnings(
         action='ignore',
@@ -14,7 +17,9 @@ if __name__ == '__main__':
     text_path = "bee_movie.txt"
     crypt_pth = "crt.txt"
     save_path = "save.txt"
-    generate_hybrid_keys(sym_pth, pub_pth, pr_pth)
-    encrypt(text_path, pr_pth, sym_pth, crypt_pth)
-    decrypt(pr_pth, sym_pth, crypt_pth, save_path)
+    key = generate_symmetric_key(16)
+    public_key = generate_asymmetric_key(pub_pth, pr_pth)
+    encrypt_symmetric_key(public_key, key)
+    encrypt(text_path, key, crypt_pth)
+    decrypt(key, crypt_pth, save_path)
 
