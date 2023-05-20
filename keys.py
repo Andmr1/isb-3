@@ -24,8 +24,8 @@ def generate_hybrid_keys(symmetric_path: str, public_key_path: str, private_key_
                                                     format=serialization.PrivateFormat.TraditionalOpenSSL,
                                                     encryption_algorithm=serialization.NoEncryption()))
     encr_key = public_key.encrypt(key,
-                                padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
-                                             label=None))
+                                  padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
+                                               label=None))
     print(encr_key)
     with open(symmetric_path, 'wb') as key_file:
         key_file.write(encr_key)
