@@ -6,8 +6,8 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 
 
-def encrypt(path_to_text: str, private_key_path: str, symmetric_key_path: str, save_path: str) -> None:
-    if os.path.isfile(path_to_text) is False:
+def decrypt(private_key_path: str, symmetric_key_path: str, encr_text_path: str, dcr_text_path: str) -> None:
+    if os.path.isfile(encr_text_path) is False:
         print("Invalid path to text")
         return
     if os.path.isfile(private_key_path) is False:
@@ -16,10 +16,9 @@ def encrypt(path_to_text: str, private_key_path: str, symmetric_key_path: str, s
     if os.path.isfile(symmetric_key_path) is False:
         print("Invalid symmetric key path")
         return
-    if os.path.isdir(save_path) is False:
+    if os.path.isdir(dcr_text_path) is False:
         print("Invalid save path")
         return
-
     with open(symmetric_key_path, mode='rb') as key_file:
         encr_key = key_file.read()
 
@@ -31,20 +30,17 @@ def encrypt(path_to_text: str, private_key_path: str, symmetric_key_path: str, s
     key = private_key.decrypt(encr_key,
                               padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
                                            label=None))
-
-    with open(path_to_text, "r") as f:
-        text = f.read()
-
-    padder = padding.ANSIX923(32).padder()
-    tex = bytes(text)
-    padded_text = padder.update(tex) + padder.finalize()
-
+    with open(encr_text_path, "r") as f:
+        c_text = f.read()
     iv = os.urandom(16)
     cipher = Cipher(algorithms.IDEA(key), modes.CBC(iv))
-    encryptor = cipher.encryptor()
-    c_text = encryptor.update(padded_text) + encryptor.finalize()
+    decryptor = cipher.decryptor()
+    c_text = bytes(c_text)
+    dc_text = decryptor.update(c_text) + decryptor.finalize()
+    unpadder = padding.ANSIX923(32).unpadder()
+    unpadded_dc_text = unpadder.update(dc_text) + unpadder.finalize()
 
-    with open(save_path, "w") as f:
-        f.writelines(c_text)
+    with open(dcr_text_path, "w") as f:
+        f.write(unpadded_dc_text.decode("UTF-8"))
 
 
