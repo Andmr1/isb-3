@@ -37,17 +37,22 @@ def decrypt(key: bytes, encr_text_path: str, dcr_text_path: str) -> None:
         logging.warning(f'{err} during writing into {dcr_text_path}')
 
 
-def decrypt_asymmetric(private_key_path: str, encr_key: bytes) -> bytes:
+def decrypt_asymmetric(private_key_path: str, encr_key_path: str) -> bytes:
     """
     Function for asymmetric decryption
     Function decrypts symmetric key
     :param private_key_path:
-    :param encr_key:
-    :return:
+    :param encr_key_path:
+    :return: key
     """
     try:
         with open(private_key_path, 'rb') as pem_in:
             private_bytes = pem_in.read()
+    except OSError as err:
+        logging.warning(f'{err} during reading from {private_key_path}')
+    try:
+        with open(encr_key_path, 'rb') as pem_in:
+            encr_key = pem_in.read()
     except OSError as err:
         logging.warning(f'{err} during reading from {private_key_path}')
     private_key = load_pem_private_key(private_bytes, password=None, )

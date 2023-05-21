@@ -37,7 +37,7 @@ def encrypt(path_to_text: str, symmetric_key: bytes, save_path: str) -> None:
         logging.warning(f'{err} during writing to {save_path}')
 
 
-def encrypt_symmetric_key(public_key: bytes, key: bytes) -> None:
+def encrypt_symmetric_key(public_key: bytes, key: bytes) -> bytes:
     """
     Symmetric key encryption
     :param public_key:
@@ -48,3 +48,4 @@ def encrypt_symmetric_key(public_key: bytes, key: bytes) -> None:
                                   padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
                                                label=None))
     logging.info(f'Symmetric key has been encrypted')
+    return encr_key
