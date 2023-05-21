@@ -1,4 +1,3 @@
-import os
 import logging
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes

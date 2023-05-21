@@ -1,6 +1,7 @@
 import json
 import logging
 
+
 def read_settings(settings_file: str) -> dict:
     """Function that reads settings from .json file.
 
