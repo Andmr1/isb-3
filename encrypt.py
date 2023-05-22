@@ -6,12 +6,12 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 
 
-def encrypt(path_to_text: str, symmetric_key: bytes, save_path: str) -> None:
+def encrypt_symmetric(path_to_text: str, symmetric_key: bytes, save_path: str) -> None:
     """
     Function encrypts text from "path_to_text" and saves it into "save_path"
-    :param path_to_text:
-    :param symmetric_key:
-    :param save_path:
+    :param path_to_text: Location of unencrypted text
+    :param symmetric_key: Key for symmetric encryption
+    :param save_path: Location where encrypted text will be saved
     :return:
     """
     try:
@@ -36,11 +36,11 @@ def encrypt(path_to_text: str, symmetric_key: bytes, save_path: str) -> None:
         logging.warning(f'{err} during writing to {save_path}')
 
 
-def encrypt_symmetric_key(public_key: bytes, key: bytes) -> bytes:
+def encrypt_asymmetric(public_key: bytes, key: bytes) -> bytes:
     """
     Symmetric key encryption
     :param public_key:
-    :param key:
+    :param key: Key for symmetric encryption
     :return:
     """
     encr_key = public_key.encrypt(key,

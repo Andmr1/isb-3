@@ -4,6 +4,7 @@ from decrypt import *
 import warnings
 import argparse
 from read import *
+from write import *
 logger = logging.getLogger()
 logger.setLevel('INFO')
 SETTINGS_FILE = "data/settings.json"
@@ -29,11 +30,11 @@ if __name__ == '__main__':
     if args.generation:
         public_key = generate_asymmetric_key(settings["public_key"], settings["private_key"])
         symmetric_key = generate_symmetric_key(16)
-        encrypted_symmetric_key = encrypt_symmetric_key(public_key, symmetric_key)
-        write_encrypted_key(settings["symmetric_key"], encrypted_symmetric_key)
+        encrypted_symmetric_key = encrypt_asymmetric(public_key, symmetric_key)
+        write_bin(settings["symmetric_key"], encrypted_symmetric_key)
     elif args.encryption:
         symmetric_key = decrypt_asymmetric(settings["private_key"], settings["symmetric_key"])
-        encrypt(settings["text_file"], symmetric_key, settings["encrypted_file"])
+        encrypt_symmetric(settings["text_file"], symmetric_key, settings["encrypted_file"])
     elif args.decryption:
         symmetric_key = decrypt_asymmetric(settings["private_key"], settings["symmetric_key"])
-        decrypt(symmetric_key, settings["encrypted_file"], settings["decrypted_file"])
+        decrypt_symmetric(symmetric_key, settings["encrypted_file"], settings["decrypted_file"])

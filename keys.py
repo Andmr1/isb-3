@@ -7,33 +7,19 @@ from cryptography.hazmat.primitives import serialization
 def generate_symmetric_key(key_length: int) -> bytes:
     """
     Function generates key for symmetric encryption
-    :param key_length:
+    :param key_length: Length of generated key
     """
     key = os.urandom(key_length)
     logging.info("Symmetric key has been generated")
     return key
 
 
-def write_encrypted_key(symmetric_path: str, encr_key: bytes) -> None:
-    """
-    Function writes encrypted symmetric key into file
-    :param symmetric_path:
-    :param encr_key:
-    """
-    try:
-        with open(symmetric_path, 'wb') as key_file:
-            key_file.write(encr_key)
-        logging.info(f'key has been written into {symmetric_path}!')
-    except OSError as err:
-        logging.warning(f'{err} Error during writing into {symmetric_path}!')
-
-
 def generate_asymmetric_key(public_key_path: str, private_key_path: str) -> bytes:
     """
     Function generates asymmetric keys and writes them into files.
-    :param public_key_path:
-    :param private_key_path:
-    :return:
+    :param public_key_path:Location where public key will be saved
+    :param private_key_path:Location where private key will be saved
+    :return: public key
     """
     keys = rsa.generate_private_key(
         public_exponent=65537,

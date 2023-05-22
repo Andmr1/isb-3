@@ -6,12 +6,12 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding as s_padding
 
 
-def decrypt(key: bytes, encr_text_path: str, dcr_text_path: str) -> None:
+def decrypt_symmetric(key: bytes, encr_text_path: str, dcr_text_path: str) -> None:
     """
     Function for symmetric decryption
-    :param key:
-    :param encr_text_path:
-    :param dcr_text_path:
+    :param key: Key for symmetric decryption
+    :param encr_text_path: Location of encrypted text
+    :param dcr_text_path: Location where decrypted text will be saved
     :return:
     """
     try:
@@ -40,9 +40,9 @@ def decrypt_asymmetric(private_key_path: str, encr_key_path: str) -> bytes:
     """
     Function for asymmetric decryption
     Function decrypts symmetric key
-    :param private_key_path:
-    :param encr_key_path:
-    :return: key
+    :param private_key_path: Location of a private key
+    :param encr_key_path: Location of encrypted symmetric key
+    :return key: Decrypted symmetric key
     """
     try:
         with open(private_key_path, 'rb') as pem_in:
