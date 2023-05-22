@@ -1,7 +1,4 @@
 import logging
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding as s_padding
 
@@ -36,26 +33,4 @@ def decrypt_symmetric(key: bytes, encr_text_path: str, dcr_text_path: str) -> No
         logging.warning(f'{err} during writing into {dcr_text_path}')
 
 
-def decrypt_asymmetric(private_key_path: str, encr_key_path: str) -> bytes:
-    """
-    Function for asymmetric decryption
-    Function decrypts symmetric key
-    :param private_key_path: Location of a private key
-    :param encr_key_path: Location of encrypted symmetric key
-    :return key: Decrypted symmetric key
-    """
-    try:
-        with open(private_key_path, 'rb') as pem_in:
-            private_bytes = pem_in.read()
-    except OSError as err:
-        logging.warning(f'{err} during reading from {private_key_path}')
-    try:
-        with open(encr_key_path, 'rb') as pem_in:
-            encr_key = pem_in.read()
-    except OSError as err:
-        logging.warning(f'{err} during reading from {private_key_path}')
-    private_key = load_pem_private_key(private_bytes, password=None, )
-    key = private_key.decrypt(encr_key,
-                              padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
-                                           label=None))
-    return key
+

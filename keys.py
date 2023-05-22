@@ -1,7 +1,10 @@
-import os
-import logging
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
+import logging
+import os
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 
 def generate_symmetric_key(key_length: int) -> bytes:
@@ -44,3 +47,41 @@ def generate_asymmetric_key(public_key_path: str, private_key_path: str) -> byte
         logging.warning(f'{err} Error during writing into {private_key_path}!')
     return public_key
 
+
+def encrypt_asymmetric(public_key: bytes, key: bytes) -> bytes:
+    """
+    Symmetric key encryption
+    :param public_key:
+    :param key: Key for symmetric encryption
+    :return:
+    """
+    encr_key = public_key.encrypt(key,
+                                  padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
+                                               label=None))
+    logging.info(f'Symmetric key has been encrypted')
+    return encr_key
+
+
+def decrypt_asymmetric(private_key_path: str, encr_key_path: str) -> bytes:
+    """
+    Function for asymmetric decryption
+    Function decrypts symmetric key
+    :param private_key_path: Location of a private key
+    :param encr_key_path: Location of encrypted symmetric key
+    :return key: Decrypted symmetric key
+    """
+    try:
+        with open(private_key_path, 'rb') as pem_in:
+            private_bytes = pem_in.read()
+    except OSError as err:
+        logging.warning(f'{err} during reading from {private_key_path}')
+    try:
+        with open(encr_key_path, 'rb') as pem_in:
+            encr_key = pem_in.read()
+    except OSError as err:
+        logging.warning(f'{err} during reading from {private_key_path}')
+    private_key = load_pem_private_key(private_bytes, password=None, )
+    key = private_key.decrypt(encr_key,
+                              padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(),
+                                           label=None))
+    return key
